@@ -1,0 +1,125 @@
+/*Program to decompress a textfile.
+* Last updated Thursday May 11th
+
+* Authors: Sean Palal & Esteban Rodriguez
+*/
+import java.util.*;
+import java.io.*;
+public class Decompress {
+public static void main(String[] args) {
+if (args.length == 0) {
+System.out.println("Please provide a file name as an argument.");
+return;
+}
+String fileName = args[0];
+Scanner scanner = new Scanner(System.in);
+boolean restart = true;
+while (restart){
+String fileName = args[0];
+Scanner scanner = new Scanner(System.in);
+HashtableChain<Integer, String> hashTable = new HashtableChain<>();
+int count = 0;
+for (int i = 32; i <= 126; i++) {
+char c = (char) i;
+count++;
+}
+hashTable.put(count, "\n");
+count++;
+hashTable.put(count,"\t");
+count++;
+hashTable.put(count, "\r");
+String outputFile = fileName + ".iii";
+String logFileName = fileName + ".log";
+int originalFileSize = 0;
+ArrayList<Integer> fileStrs = new ArrayList<>();
+// iterate through all lines in file, create an arraylist with all the characters, then iteratte through arraylist keep track
+of the biggest possible string matching in the dictionary
+//
+//use get method to see if a string is in a file
+//store biggest string so far,
+ObjectInputStream in;
+PrintWriter output;
+PrintWriter logWriter;
+try {
+in = new ObjectInputStream(new FileInputStream(fileName));
+int line;
+String space;
+output = new PrintWriter(new FileWriter(outputFile));
+File logFile = new File(logFileName);
+logFile.createNewFile();
+logWriter = new PrintWriter(new FileWriter(logFile));
+try {
+while (true) {
+line = in.readInt();
+space = in.readUTF();
+
+space = in.readUTF();
+
+originalFileSize += 4;
+fileStrs.add(line);
+}
+}
+catch (EOFException e) {
+
+System.out.println("End of reading from file");
+}
+catch (IOException e) {
+System.out.println("IO Exception Binary");
+}
+Integer q = fileStrs.get(0);
+Integer p;
+String pVal = "";
+String qVal = "";
+char firstChar = ' ';
+long startTime = System.currentTimeMillis();
+for (int i = 1; i < fileStrs.size(); i++) {
+p = fileStrs.get(i);
+if (hashTable.get(p) != null) {
+decString += hashTable.get(p);
+qVal = hashTable.get(q);
+firstChar = hashTable.get(p).charAt(0);
+hashTable.put(count, qVal + Character.toString(firstChar));
+count++;
+q = p;
+}
+else {
+qVal = hashTable.get(q);
+firstChar = hashTable.get(q).charAt(0);
+decString += qVal + Character.toString(firstChar);
+hashTable.put(count, qVal + Character.toString(firstChar));
+count++;
+q = p;
+}
+}
+output.write(decString);
+long endTime = System.currentTimeMillis();
+long decompressionTime = endTime - startTime;
+double decompressionTimeSec = (double) decompressionTime / 1000;
+logWriter.println("Compression of " + fileName);
+logWriter.printf("Compression took %.3f seconds\n", decompressionTimeSec);
+in.close();
+output.close();
+logWriter.close();
+}
+catch (FileNotFoundException e) {
+System.out.println("File Not Found");
+}
+catch (IOException e) {
+System.out.println("IO Exception");
+}
+System.out.println("Exit program? (y for yes n for no)");
+String choice = scanner.nextLine();
+if (choice.equals("y")) {
+restart = false;
+}
+else {
+System.out.println("Enter a new file to be compressed: ");
+fileName = scanner.nextLine();
+restart = true;
+}
+}
+
+scanner.close();
+}
+}
+}
